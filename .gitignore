@@ -1,4 +1,9 @@
 target/
 *.exe
+
+build/
+build-*/
+cmake-build-*/
+
 .*/
 !.gitignore

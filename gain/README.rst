@@ -54,20 +54,26 @@ applied before writing the output file.
 C++ version
 -----------
 
-The C++ implementation lives in ``cpp/main.cpp`` and uses only the C++ standard
-library.
+The C++ implementation lives in `cpp/gain.cpp` and uses the shared WAV
+utilities from `../shared`.
 
-One simple way to build it is:
+Build it from the repository root with CMake:
 
 .. code-block:: powershell
 
-   cd gain\cpp
-   g++ -std=c++17 -O2 main.cpp -o gain.exe
-   .\gain.exe input.wav output.wav --db 6
-   .\gain.exe input.wav output.wav --linear 0.5
+   cmake -S . -B build
+   cmake --build build --target gain
 
-Use the equivalent compiler command for your environment if you are using MSVC,
-Clang, or a different build setup.
+Run the built executable with an input WAV path, an output WAV path, and either
+``--db`` or ``--linear``:
+
+.. code-block:: powershell
+
+   .\build\gain\cpp\gain.exe input.wav output.wav --db 6
+   .\build\gain\cpp\gain.exe input.wav output.wav --linear 0.5
+
+The exact executable path can vary by generator. For Visual Studio generators,
+check under a configuration folder such as ``build\gain\cpp\Debug\gain.exe``.
 
 Notes
 -----
