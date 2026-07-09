@@ -4,3 +4,4 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+wav_util = {path = "../../shared/shared-rust", package = "wav_util"}
