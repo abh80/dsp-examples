@@ -14,7 +14,7 @@ fn apply_gain(audio_data: &mut AudioData, linear_gain: f64) {
             for s in &mut audio_data.samples {
                 let sample = (*s as i16) - 128;
                 let scaled = sample as f64 * linear_gain;
-                *s = (soft_clipping(scaled, DEFAULT_CEILING).round() + 128.0) as u8;
+                *s = (soft_clipping(scaled, 127.0).round() + 128.0) as u8;
             }
         }
 
@@ -27,10 +27,23 @@ fn apply_gain(audio_data: &mut AudioData, linear_gain: f64) {
             }
         }
 
+        24 => {
+            for s in audio_data.samples.chunks_exact_mut(3) {
+                let sample = ((i32::from_le_bytes([s[0], s[1], s[2], 0])) << 8) >> 8;
+                let scaled = soft_clipping(sample as f64 * linear_gain, 8388608.0).round() as i32;
+                let bytes = scaled.to_le_bytes();
+
+                s[0] = bytes[0];
+                s[1] = bytes[1];
+                s[2] = bytes[2];
+            }
+        }
+
         32 => {
             for s in audio_data.samples.chunks_exact_mut(4) {
                 let sample = i32::from_le_bytes([s[0], s[1], s[2], s[3]]);
-                let scaled = (sample as f64 * linear_gain).round() as i32;
+                let scaled =
+                    soft_clipping(sample as f64 * linear_gain, 2147483647.0).round() as i32;
                 s.copy_from_slice(&scaled.to_le_bytes());
             }
         }
